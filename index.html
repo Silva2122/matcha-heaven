@@ -3,17 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Matcha Heaven</title>
+<title>Red Bull — Wings &amp; Light</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f2f1eb;              /* rice paper */
-    --ink:#1c3a20;             /* deep matcha */
-    --muted:rgba(28,58,32,.66);
-    --gold:#b48b36;
-    --line:rgba(28,58,32,.14);
+    --bg:#eef1f5;              /* cool silver paper, like the can */
+    --ink:#0a1f5c;             /* deep Red Bull blue */
+    --muted:rgba(10,31,92,.68);
+    --display:"Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+    --sans:"Barlow", "Helvetica Neue", Arial, sans-serif;
+    --gold:#d3232f;            /* the accent is the can's red */
+    --amber:#f2c12e;           /* and its gold */
+    --line:rgba(16,34,74,.14);
     --reveal:150px;
     --x:50vw; --y:50vh;
     --nav:84px;
@@ -23,7 +26,7 @@
   body{
     background:var(--bg);
     color:var(--ink);
-    font-family:"Inter",system-ui,sans-serif;
+    font-family:var(--sans);
     overflow:hidden;
     cursor:none;
     -webkit-font-smoothing:antialiased;
@@ -37,9 +40,37 @@
     isolation:isolate;
     background:var(--bg);
     background-image:
-      radial-gradient(ellipse 55% 45% at 50% 70%, rgba(154,190,90,.16), transparent 70%),
-      linear-gradient(180deg, #f6f5ef 0%, #f2f1eb 55%, #ebebe2 100%);
+      radial-gradient(ellipse 60% 55% at 50% 58%, rgba(255,255,255,.9), transparent 72%),
+      linear-gradient(180deg, #f3f5f8 0%, #edf0f4 60%, #e4e8ee 100%);
   }
+
+  /* faint rays from behind the picture, turning very slowly: heaven, and a little charge */
+  .rays{
+    position:absolute; z-index:0; pointer-events:none;
+    left:50%; top:50%;
+    width:160vmax; height:160vmax;
+    margin:-80vmax 0 0 -80vmax;
+    background:repeating-conic-gradient(from 0deg at 50% 50%, rgba(242,193,46,.07) 0deg 4deg, transparent 4deg 14deg);
+    -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 0%, transparent 42%);
+    mask-image:radial-gradient(circle at 50% 50%, #000 0%, transparent 42%);
+    animation:turnSlow 140s linear infinite, fadeIn 3s ease .6s both;
+  }
+  @keyframes turnSlow{to{transform:rotate(360deg)}}
+
+  /* sparks of charge drifting up around the picture (canvas) */
+  #sparks{position:absolute; inset:0; z-index:2; width:100%; height:100%; pointer-events:none}
+
+  /* the picture glows outward: a blurred copy of the fresco behind the panel, dissolving into the paper */
+  .halo{
+    position:absolute; z-index:0;
+    pointer-events:none;
+    opacity:.9;
+    will-change:transform;
+    -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%, #000 34%, transparent 74%);
+    mask-image:radial-gradient(ellipse 50% 50% at 50% 50%, #000 34%, transparent 74%);
+    animation:fadeIn 2.4s ease .3s both;
+  }
+  @keyframes fadeIn{from{opacity:0}}
 
   /* the whole scene is one picture pushed into 3D by a depth map (WebGL) */
   #gl{
@@ -56,28 +87,28 @@
   .title{
     position:absolute;
     top:calc(var(--nav) + 1.5vh); left:0; right:0;
-    z-index:1;                 /* under the canvas: the cup and leaves pass in front of it */
+    z-index:1;                 /* under the canvas: the cup passes in front of it */
     text-align:center;
     pointer-events:none;
     user-select:none;
-    font-family:"Cormorant Garamond",serif;
-    font-weight:300;
-    font-size:8vw;             /* refined by JS */
-    line-height:.85;
-    letter-spacing:0;
+    font-family:var(--display);
+    font-weight:800;
+    font-size:8vw;             /* refined by JS to the exact width of the picture */
+    line-height:.86;
+    letter-spacing:.01em;
     text-transform:uppercase;
     white-space:nowrap;
     color:var(--ink);
     animation:rise 1.6s cubic-bezier(.19,1,.22,1) .2s both;
   }
-  .title em{font-style:italic;font-weight:300;color:var(--gold)}
+  .title em{font-style:normal;color:var(--gold)}
   .title .word{display:inline-block}
 
   /* the picture: a soft shadow under the rounded panel the shader paints */
   .panel-shadow{
     position:absolute; z-index:2;
     border-radius:var(--r, 22px);
-    box-shadow:0 50px 90px -40px rgba(28,58,32,.45), 0 0 0 1px rgba(28,58,32,.08);
+    box-shadow:0 50px 90px -40px rgba(16,34,74,.45), 0 0 0 1px rgba(16,34,74,.08);
     pointer-events:none;
     animation:rise 1.8s cubic-bezier(.19,1,.22,1) .3s both;
   }
@@ -88,22 +119,25 @@
     display:flex; justify-content:space-between; align-items:center;
     padding:28px 40px;
     z-index:40;
-    font-size:12px; letter-spacing:0; text-transform:uppercase;
+    font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
     color:var(--muted);
     animation:rise 1.4s cubic-bezier(.19,1,.22,1) .2s both;
   }
   .nav a{color:inherit;text-decoration:none;transition:color .3s}
   .nav a:hover{color:var(--ink)}
-  .nav .mark{font-family:"Cormorant Garamond",serif;font-size:20px;letter-spacing:0;text-transform:none;color:var(--ink)}
+  .nav .mark{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
   .nav ul{display:flex;gap:36px;list-style:none}
-  .nav .order{
-    color:var(--ink);
-    border:1px solid rgba(28,58,32,.3);
-    padding:9px 18px;
-    border-radius:999px;
-    transition:border-color .3s, background .3s;
+  /* Red Bull buttons: solid red slabs, bold caps, a whisper of radius */
+  .nav .order, .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    color:#fff;
+    background:var(--gold);
+    padding:12px 22px;
+    border-radius:4px;
+    font-family:var(--sans); font-weight:700; font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+    transition:background .25s, transform .25s;
   }
-  .nav .order:hover{border-color:var(--ink); background:rgba(255,255,255,.6)}
+  .nav .order:hover, .btn:hover{background:#b8161f; transform:translateY(-1px)}
 
   /* ---------- card ---------- */
   .side{
@@ -122,7 +156,7 @@
     -webkit-backdrop-filter:blur(10px);
     transition:border-color .4s, background .4s;
   }
-  .card:hover{border-color:rgba(28,58,32,.36); background:rgba(255,255,255,.9)}
+  .card:hover{border-color:rgba(16,34,74,.36); background:rgba(255,255,255,.9)}
   .card .pic{
     position:relative;
     margin:-18px -18px 14px;
@@ -138,27 +172,26 @@
   .card:hover .pic img{transform:scale(1.12)}
   .card .pic figcaption{
     position:absolute; left:12px; bottom:8px;
-    font-family:"Cormorant Garamond",serif; font-style:italic;
-    font-size:13px; color:#fff;
+    font-family:var(--sans); font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    font-size:10px; color:#fff;
     text-shadow:0 1px 8px rgba(0,0,0,.4);
   }
   .card .lbl{
     display:flex; justify-content:space-between; align-items:baseline;
-    font-size:10px; text-transform:uppercase; color:var(--muted);
+    font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
     margin-bottom:10px;
   }
-  .card h3{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:26px;line-height:1.05;margin-bottom:8px}
-  .card h3 em{font-style:italic;font-weight:300}
-  .card p{font-size:13px;line-height:1.5;color:var(--muted);font-weight:300}
+  .card h3{font-family:var(--display);font-weight:800;font-size:30px;line-height:.92;letter-spacing:.01em;text-transform:uppercase;margin-bottom:10px}
+  .card h3 em{font-style:normal;color:var(--gold)}
+  .card p{font-size:13.5px;line-height:1.5;color:var(--muted);font-weight:400}
   .card .more{
-    display:inline-block; margin-top:14px;
-    font-size:10px; text-transform:uppercase;
-    color:var(--ink); text-decoration:none;
-    border-bottom:1px solid rgba(28,58,32,.25);
-    padding-bottom:4px;
-    transition:border-color .3s;
+    display:inline-flex; align-items:center; gap:8px; margin-top:16px;
+    font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--gold); text-decoration:none;
+    transition:gap .25s;
   }
-  .card .more:hover{border-color:var(--ink)}
+  .card .more::after{content:"→"; font-weight:400}
+  .card .more:hover{gap:12px}
   @media (max-width:1040px){ .side{display:none} }
 
   /* ---------- footer line ---------- */
@@ -167,20 +200,18 @@
     display:flex; justify-content:space-between; align-items:flex-end;
     padding:32px 40px;
     z-index:20;
-    font-size:11px; text-transform:uppercase;
+    font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
     color:var(--muted);
     animation:rise 1.4s ease 1.3s both;
   }
   .foot .cta{
     display:inline-flex; align-items:center; gap:14px;
-    color:var(--ink); text-decoration:none;
-    border-bottom:1px solid rgba(28,58,32,.25);
-    padding-bottom:6px;
-    transition:border-color .3s;
+    color:var(--ink); text-decoration:none; font-weight:700;
+    transition:gap .25s;
   }
-  .foot .cta:hover{border-color:var(--ink)}
-  .foot .cta span.line{width:40px;height:1px;background:currentColor;display:inline-block}
-  .foot .hint{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:15px;text-transform:none}
+  .foot .cta:hover{gap:20px}
+  .foot .cta span.line{width:40px;height:2px;background:var(--gold);display:inline-block}
+  .foot .hint{font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.06em}
 
   @keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 
@@ -212,8 +243,8 @@
     animation:turn 26s linear infinite;
   }
   .cursor .ring2{fill:none; stroke:var(--ink); stroke-width:.6; opacity:.3}
-  .cursor .leaf{transform-origin:50% 50%; animation:turn 18s linear infinite reverse}
-  .cursor .leaf path{fill:url(#leafg)}
+  .cursor .bolt{transform-origin:50% 50%}
+  .cursor .bolt path{fill:url(#boltg)}
   body.over-link .cursor{--reveal:96px}
   body.has-pointer .cursor{opacity:1}
   @keyframes turn{to{transform:rotate(360deg)}}
@@ -231,50 +262,52 @@
 <body>
 
 <main class="hero" id="hero">
-  <canvas id="gl" aria-label="An iced matcha latte held out toward you from a sky fresco with a goddess and a gilded arch"></canvas>
-  <h1 class="title" id="title"><span class="word" id="word">Leaf <em>&amp;</em> Light</span></h1>
+  <div class="rays" aria-hidden="true"></div>
+  <canvas id="sparks" aria-hidden="true"></canvas>
+  <canvas id="gl" aria-label="A hand holds a can of Red Bull out toward you from a sky fresco with a goddess and a gilded arch"></canvas>
+  <h1 class="title" id="title"><span class="word" id="word">Wings <em>&amp;</em> Light</span></h1>
+  <canvas class="halo" id="halo" aria-hidden="true"></canvas>
   <div class="panel-shadow" id="shadow"></div>
 
   <nav class="nav">
-    <a class="mark" href="#">Matcha Heaven</a>
+    <a class="mark" href="#">Red Bull</a>
     <ul>
-      <li><a href="#">Menu</a></li>
-      <li><a href="#">Locations</a></li>
-      <li><a href="#">About</a></li>
+      <li><a href="#">Drinks</a></li>
+      <li><a href="#">Athletes</a></li>
+      <li><a href="#">Events</a></li>
     </ul>
-    <a class="order" href="#">Order</a>
+    <a class="order" href="#">Buy now</a>
   </nav>
 
   <aside class="side">
     <div class="card">
       <figure class="pic"><img src="img/card-muse.webp" alt="A muse with a golden laurel against the sky"><figcaption>The muse, ceiling fresco</figcaption></figure>
-      <div class="lbl"><span>Signature</span><span>Iced · 450 ml</span></div>
-      <h3>Heaven <em>Latte</em></h3>
-      <p>Stone-ground Uji matcha whisked over oat milk and ice, with a thread of wild honey.</p>
-      <a class="more" href="#">See the menu</a>
+      <div class="lbl"><span>Energy drink</span><span>Chilled · 250 ml</span></div>
+      <h3>Red Bull <em>Energy</em></h3>
+      <p>Caffeine, taurine and B-group vitamins, best ice-cold from the can. Made for long nights and early flights.</p>
+      <a class="btn" href="#">See all drinks</a>
     </div>
   </aside>
 
   <div class="foot">
-    <a class="cta" href="#"><span class="line"></span>Order for pickup</a>
-    <span class="hint">Exceptional tea for brighter days</span>
+    <a class="cta" href="#"><span class="line"></span>Find it nearby</a>
+    <span class="hint">Cold, charged, heaven-sent</span>
   </div>
 </main>
 
 <div class="cursor" aria-hidden="true">
   <svg viewBox="0 0 100 100">
     <defs>
-      <linearGradient id="leafg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#8fbf4a"/>
-        <stop offset=".6" stop-color="#3f7a2a"/>
-        <stop offset="1" stop-color="#1c3a20"/>
+      <linearGradient id="boltg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f7d35a"/>
+        <stop offset=".55" stop-color="#f2c12e"/>
+        <stop offset="1" stop-color="#d3232f"/>
       </linearGradient>
     </defs>
     <circle class="ring2" cx="50" cy="50" r="48"/>
     <circle class="ring" cx="50" cy="50" r="48"/>
-    <g class="leaf">
-      <path d="M50 34 C60 40 60 58 50 66 C40 58 40 40 50 34 Z"/>
-      <path d="M50 36 L50 64" stroke="#e9f2d6" stroke-width=".7" fill="none"/>
+    <g class="bolt">
+      <path d="M54 30 L40 54 L49 54 L45 70 L60 46 L51 46 Z"/>
     </g>
   </svg>
 </div>
@@ -289,8 +322,8 @@
 
   // ---------- load the layers ----------
   const load = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
-  const [sky, arch, goddess, cup, leaves] = await Promise.all(
-    ['sky', 'arch', 'goddess', 'matcha', 'leaves-clean'].map(n => load(`img/${n}.webp`))
+  const [sky, arch, goddess, cup] = await Promise.all(
+    ['sky', 'arch', 'goddess', 'redbull'].map(n => load(`img/${n}.webp`))
   );
   try {
     await Promise.all([
@@ -305,28 +338,37 @@
   const shadow = document.getElementById('shadow');
   let panel = { x: 0, y: 0, w: 0, h: 0, r: 22 };   // CSS px
 
-  const layout = () => {
+  const halo = document.getElementById('halo');
+  const hx = halo.getContext('2d');
+  const fitTitle = w => {
     title.style.fontSize = '100px';
     const tw = word.getBoundingClientRect().width;
-    title.style.fontSize = (100 * innerWidth * 0.6 / tw) + 'px';
-    const tb = title.getBoundingClientRect().bottom;
-    const top = tb + Math.max(18, innerHeight * 0.03);
-    const h = innerHeight - 36 - top;
-    const w = Math.min(h * 1.42, innerWidth * 0.62);
-    panel = { x: (innerWidth - w) / 2, y: top, w, h, r: Math.round(Math.min(w, h) * 0.035) };
-    Object.assign(shadow.style, { left: panel.x + 'px', top: panel.y + 'px', width: w + 'px', height: h + 'px' });
+    title.style.fontSize = (100 * w / tw) + 'px';
+  };
+  const layout = () => {
+    let w = innerWidth * 0.62;
+    for (let i = 0; i < 3; i++) {
+      fitTitle(w);
+      const tb = title.getBoundingClientRect().bottom;
+      const top = tb + Math.max(18, innerHeight * 0.03);
+      const h = innerHeight - 36 - top;
+      w = Math.min(h * 1.42, innerWidth * 0.62);
+      panel = { x: (innerWidth - w) / 2, y: top, w, h, r: Math.round(Math.min(w, h) * 0.035) };
+    }
+    Object.assign(shadow.style, { left: panel.x + 'px', top: panel.y + 'px', width: panel.w + 'px', height: panel.h + 'px' });
     shadow.style.setProperty('--r', panel.r + 'px');
   };
 
   // ---------- paint each plane into its own texture at screen size ----------
-  // Planes, far to near: back (sky + arch), goddess, cup, leaves.
+  // Planes, far to near: back (sky + arch), goddess, cup.
   let W = 0, H = 0, dpr = 1;
-  const planes = ['back', 'goddess', 'cup', 'leaves'].map(() => {
+  const planes = ['back', 'goddess', 'cup'].map(() => {
     const c = document.createElement('canvas');
     return { c, x: c.getContext('2d') };
   });
 
   let cupCenter = [0.3, 0.6], cupPivot = [0.3, 0.8];
+  const TILT = 0.62;                                    // radians: the hand turned to hold the can upright
   const compose = () => {
     layout();
     dpr = Math.min(devicePixelRatio || 1, 1.5);
@@ -338,16 +380,11 @@
     const sw = Math.max(P.w * 1.26, P.h * 1.26 * 1448 / 1086), sh = sw * 1086 / 1448;
     const S = { x: P.x + (P.w - sw) / 2 + P.w * 0.05, y: P.y + (P.h - sh) / 2 - P.h * 0.02, w: sw, h: sh };
 
-    // the cup: her hand comes out of the empty fold of the drapery (≈33% / 58% of the fresco)
-    // and holds the glass out to you; the wrist sits behind the thumb (≈48% / 52% of the cup image)
-    const ch = P.h * 0.86 * 1086 / 829, cw = ch * 1448 / 1086;
-    // the sleeve opening sits at ≈38% / 57% of the fresco; the wrist is hidden behind the
-    // bottom of the glass (≈31% / 86% of the cup image), so that point goes into the sleeve
-    const C = { x: S.x + S.w * 0.378 - cw * 0.31, y: S.y + S.h * 0.572 - ch * 0.86, w: cw, h: ch };
-
-    // leaves drift over the whole screen
-    const lw = Math.max(W * 1.1, H * 1.1 * 1448 / 1086), lh = lw * 1086 / 1448;
-    const L = { x: (W - lw) / 2, y: (H - lh) / 2, w: lw, h: lh };
+    // the can: her hand comes out of the sleeve opening (≈38% / 57% of the fresco) and holds it
+    // up to you; the cut wrist (≈25% / 73% of the can image) goes into the sleeve, and the whole
+    // hand is turned about the wrist (uTilt) so the can stands over the sleeve, clear of her face
+    const ch = P.h * 1.3, cw = ch * 1122 / 1402;
+    const C = { x: S.x + S.w * 0.378 - cw * 0.25, y: S.y + S.h * 0.572 - ch * 0.73, w: cw, h: ch };
 
     for (const pl of planes) { pl.c.width = W; pl.c.height = H; pl.x.clearRect(0, 0, W, H); }
     planes[0].x.drawImage(sky, 0, 0, W, H);            // safety net: sky behind everything
@@ -355,9 +392,24 @@
     planes[0].x.drawImage(arch,    S.x, S.y, S.w, S.h);
     planes[1].x.drawImage(goddess, S.x, S.y, S.w, S.h);
     planes[2].x.drawImage(cup,     C.x, C.y, C.w, C.h);
-    planes[3].x.drawImage(leaves,  L.x, L.y, L.w, L.h);
-    cupCenter = [(C.x + C.w * 0.2925) / W, (C.y + C.h * 0.56) / H];
-    cupPivot = [(C.x + C.w * 0.31) / W, (C.y + C.h * 0.86) / H];
+
+    // the halo: the same picture, small and blurred, spilling past the panel's edges
+    const HB = { x: panel.x - panel.w * 0.36, y: panel.y - panel.h * 0.45, w: panel.w * 1.72, h: panel.h * 1.9 };
+    const k = 0.25;
+    halo.width = Math.round(HB.w * k); halo.height = Math.round(HB.h * k);
+    Object.assign(halo.style, { left: HB.x + 'px', top: HB.y + 'px', width: HB.w + 'px', height: HB.h + 'px' });
+    hx.clearRect(0, 0, halo.width, halo.height);
+    hx.filter = 'blur(15px) saturate(1.2) brightness(1.06)';
+    const hs = { x: (S.x / dpr - HB.x) * k, y: (S.y / dpr - HB.y) * k, w: S.w / dpr * k, h: S.h / dpr * k };
+    for (const im of [sky, arch, goddess]) hx.drawImage(im, hs.x, hs.y, hs.w, hs.h);
+    cupPivot = [(C.x + C.w * 0.25) / W, (C.y + C.h * 0.73) / H];
+    // where the can's centre lands on screen once the hand is turned about the wrist
+    {
+      const ax = W / H;
+      const dx = ((C.x + C.w * 0.56) / W - cupPivot[0]) * ax, dy = (C.y + C.h * 0.55) / H - cupPivot[1];
+      const c = Math.cos(-TILT), sn = Math.sin(-TILT);
+      cupCenter = [cupPivot[0] + (c * dx - sn * dy) / ax, cupPivot[1] + (sn * dx + c * dy)];
+    }
   };
 
   // ---------- WebGL: every plane is shifted by its own depth, then stacked ----------
@@ -369,7 +421,7 @@
       ctx.save(); ctx.beginPath();
       ctx.roundRect(panel.x * dpr, panel.y * dpr, panel.w * dpr, panel.h * dpr, panel.r * dpr); ctx.clip();
       ctx.drawImage(planes[0].c, 0, 0); ctx.drawImage(planes[1].c, 0, 0); ctx.restore();
-      ctx.drawImage(planes[2].c, 0, 0); ctx.drawImage(planes[3].c, 0, 0);
+      ctx.drawImage(planes[2].c, 0, 0);
     };
     draw(); addEventListener('resize', draw);
     canvas.classList.add('ready');
@@ -381,11 +433,12 @@
     void main(){ v = p * .5 + .5; v.y = 1. - v.y; gl_Position = vec4(p, 0., 1.); }`;
   const fs = `
     precision highp float;
-    uniform sampler2D uBack, uGoddess, uCup, uLeaves;
+    uniform sampler2D uBack, uGoddess, uCup;
     uniform vec2 uShift;      // camera offset from the cursor
     uniform float uPush;      // pull toward the viewer (intro)
     uniform vec2 uCupC;       // centre of the glass on screen
     uniform vec2 uCupPivot;   // the wrist, where the hand enters the sleeve
+    uniform float uTilt;      // base turn of the hand about the wrist
     uniform vec2 uRes;        // canvas size in px
     uniform vec4 uPanel;      // x, y, w, h in px
     uniform float uRadius;    // corner radius in px
@@ -412,14 +465,11 @@
       vec2 p = v;
       vec4 acc = vec4(0.);
 
-      // leaves: right in your face
-      over(acc, tap(uLeaves, at(p, 1.1)));
-
       // cup: a rigid glass — it moves with the sleeve and swings around the wrist, never bends
       vec2 A = vec2(uRes.x / uRes.y, 1.);
       float dw = .34 + .26 * uCupPivot.y;              // same depth as the fabric at the sleeve
       vec2 d = (p - uCupPivot + uShift * (dw - F)) * A; // follow the sleeve
-      float ang = uShift.x * 1.6;                      // tilt toward the cursor
+      float ang = uTilt + uShift.x * 1.6;              // held upright, tilting toward the cursor
       float sc = (1. + uPush * .9) * (1. - uShift.y * .9);
       d = mat2(cos(ang), sin(ang), -sin(ang), cos(ang)) * d / sc;
       over(acc, tap(uCup, uCupPivot + d / A));
@@ -451,7 +501,7 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   const U = n => gl.getUniformLocation(prog, n);
-  const names = ['uBack', 'uGoddess', 'uCup', 'uLeaves'];
+  const names = ['uBack', 'uGoddess', 'uCup'];
   const texs = names.map((n, i) => {
     const t = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0 + i);
@@ -463,7 +513,8 @@
     gl.uniform1i(U(n), i);
     return t;
   });
-  const uShift = U('uShift'), uPush = U('uPush'), uCupC = U('uCupC'), uRes = U('uRes'), uPanel = U('uPanel'), uRadius = U('uRadius'), uCupPivot = U('uCupPivot');
+  const uShift = U('uShift'), uPush = U('uPush'), uCupC = U('uCupC'), uRes = U('uRes'), uPanel = U('uPanel'), uRadius = U('uRadius'), uCupPivot = U('uCupPivot'), uTilt = U('uTilt');
+  gl.uniform1f(uTilt, TILT);
 
   const upload = () => {
     compose();
@@ -503,6 +554,50 @@
     a.addEventListener('pointerleave', () => body.classList.remove('over-link'));
   });
 
+  // ---------- sparks: small motes of charge rising around the picture ----------
+  const sparks = document.getElementById('sparks');
+  const sx = sparks.getContext('2d');
+  // Red Bull bubbles: blue, red, silver and a little gold; glowing dots and thin rings,
+  // the bigger ones nearer — they rise faster and swing more with the cursor
+  const COLS = ['27,62,168', '27,62,168', '211,35,47', '211,35,47', '235,240,248', '235,240,248', '245,197,24'];
+  const motes = Array.from({ length: 96 }, (_, i) => {
+    const r = 1.6 + Math.pow(Math.random(), 1.6) * 7;         // mostly small, a few big
+    return {
+      x: Math.random(), y: Math.random(), r,
+      v: (0.00028 + Math.random() * 0.0004) * (0.7 + r / 6),
+      sway: 0.003 + Math.random() * 0.012, ph: Math.random() * 6.3,
+      c: COLS[i % COLS.length], ring: i % 3 === 0,
+    };
+  });
+  let lastT = 0;
+  const drawSparks = now => {
+    const dt = Math.min(40, now - lastT || 16); lastT = now;
+    if (sparks.width !== W || sparks.height !== H) { sparks.width = W; sparks.height = H; }
+    sx.clearRect(0, 0, W, H);
+    for (const m of motes) {
+      m.y -= m.v * dt / 16;
+      if (m.y < -0.06) { m.y = 1.06; m.x = Math.random(); }
+      const depth = m.r / 8.6;                                  // 0 far … 1 near
+      const x = (m.x + Math.sin(now / 1600 + m.ph) * m.sway + nx * (0.008 + depth * 0.02)) * W;
+      const y = (m.y + ny * (0.005 + depth * 0.014)) * H;
+      const life = Math.sin(Math.PI * Math.min(1, Math.max(0, (m.y + 0.06) / 1.12)));
+      const a = life * (m.ring ? 0.75 : 0.9 - depth * 0.35);
+      const rr = m.r * dpr;
+      if (m.ring) {
+        sx.strokeStyle = `rgba(${m.c},${a.toFixed(3)})`;
+        sx.lineWidth = 1.3 * dpr;
+        sx.shadowBlur = 0;
+        sx.beginPath(); sx.arc(x, y, rr, 0, Math.PI * 2); sx.stroke();
+      } else {
+        sx.fillStyle = `rgba(${m.c},${a.toFixed(3)})`;
+        sx.shadowColor = `rgba(${m.c},${(a * 0.9).toFixed(3)})`;
+        sx.shadowBlur = rr * 2.5;
+        sx.beginPath(); sx.arc(x, y, rr, 0, Math.PI * 2); sx.fill();
+      }
+    }
+    sx.shadowBlur = 0;
+  };
+
   const frame = now => {
     if (idle) {
       t += 0.006;
@@ -523,8 +618,12 @@
 
     // the camera orbits with the cursor: near things swing the most
     gl.uniform2f(uShift, still ? 0 : nx * 0.06, still ? 0 : ny * 0.045);
+    // the glow drifts a little with the cursor and breathes slowly
+    const br = 1 + 0.025 * Math.sin(now / 3800);
+    halo.style.transform = `translate3d(${(nx * 10).toFixed(1)}px, ${(ny * 7).toFixed(1)}px, 0) scale(${br.toFixed(4)})`;
     gl.uniform1f(uPush, push);
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    if (!still) drawSparks(now);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     requestAnimationFrame(frame);
   };
